@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MeetingsAPI.Controllers.Services;
 using MeetingsAPI.Controllers.Services.Interfaces;
 using MeetingsAPI.Entities;
+using MeetingsAPI.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +32,7 @@ namespace MeetingsAPI
         {
             services.AddDbContext<MeetingsDbContext>();
             services.AddScoped<IMeetingService, MeetingService>();
+            services.AddScoped<ExceptionHandlingMiddleware>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -47,6 +49,8 @@ namespace MeetingsAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MeetingsAPI v1"));
             }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.UseHttpsRedirection();
             app.UseRouting();

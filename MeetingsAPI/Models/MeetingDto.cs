@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MeetingsAPI.Entities
+namespace MeetingsAPI.Models
 {
-    public class Meeting
+    public class MeetingDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime Time { get; set; }
-        public virtual List<User> EnrolledUsers { get; set; }
     }
 }
