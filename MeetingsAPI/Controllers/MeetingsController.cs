@@ -35,7 +35,7 @@ namespace MeetingsAPI.Controllers
         }
 
         [HttpDelete]
-        public ActionResult RemoveMeeting([FromBody]int meetingId)
+        public ActionResult RemoveMeeting([FromBody]int meetingId)      //NIE FROM BODY!
         {
             _meetingService.RemoveMeetingFromDb(meetingId);
             return NoContent();

@@ -55,6 +55,10 @@ namespace MeetingsAPI.Controllers.Services
                 .Include(n => n.EnrolledUsers)
                 .FirstOrDefault(n => n.Id == meetingId);
         }
+        private bool MoreThan25PeopleEnrolled(Meeting meeting)
+        {
+            return meeting.EnrolledUsers.Count() >= 25;
+        }
 
 
         public void CreateMeetingAndAddToDb(MeetingDto dto)
@@ -85,9 +89,17 @@ namespace MeetingsAPI.Controllers.Services
             var user = FindUserInDb(dto.UserName,dto.UserEmail);
             if (user == null)
             {
-                user = CreateUserObject(dto.UserName,dto.UserEmail);
+                user = CreateUserObject(dto.UserName, dto.UserEmail);
                 AddUserToDb(user);
             }
+            else
+            {
+                if(meeting.EnrolledUsers.FirstOrDefault(n => n.Email == user.Email) != null);                 //nie wiem czy to działa
+                    throw new Exception("User with this email already enrolls the course");                  //jak to jest po angielski??
+            }
+
+            if (MoreThan25PeopleEnrolled(meeting))
+                throw new Exception("Too much users enrolled in the meeting");
             
             meeting.EnrolledUsers.Add(user);
             _dbContext.Meetings.Update(meeting);

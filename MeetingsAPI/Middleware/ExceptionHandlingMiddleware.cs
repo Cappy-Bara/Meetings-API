@@ -24,7 +24,7 @@ namespace MeetingsAPI.Middleware
             catch (Exception e)
             {
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Something went wrong!");
+                await context.Response.WriteAsync(e.Message);
             }
 
         }
