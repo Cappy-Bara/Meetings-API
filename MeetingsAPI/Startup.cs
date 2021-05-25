@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MeetingsAPI.Controllers.Services;
 using MeetingsAPI.Controllers.Services.Interfaces;
 using MeetingsAPI.Entities;
 using MeetingsAPI.Middleware;
+using MeetingsAPI.Models;
+using MeetingsAPI.Models.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,15 +37,16 @@ namespace MeetingsAPI
             services.AddDbContext<MeetingsDbContext>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IMeetingService, MeetingService>();
+            services.AddScoped<IValidator<CreateMeetingDto>, CreateMeetingDtoValidator>();
+            services.AddScoped<IValidator<UserDto>, UserDtoValidator>();
             services.AddScoped<ExceptionHandlingMiddleware>();
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MeetingsAPI", Version = "v1" });
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

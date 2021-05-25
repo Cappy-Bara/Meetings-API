@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "dHr8M548Xtqu/BFMDWCmCJCYT84KRgJpnrHCcQ6MP+WhiH/n3cmPtOMN+xLfsFLriCGxDdwhPbIgZiMtAYjIBg==",
+  "dgSpecHash": "RN4R9/ske1G54oaT9F4qxsI+dDNvEP1pR7SjFQ1cSixOyLPG9BCPv0p/m0z1MmdNS6lSL5KQDHHZCakEbj9nUA==",
   "success": true,
   "projectFilePath": "D:\\csharp\\MeetingsAPI\\Meetings API\\MeetingsAPI\\MeetingsAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kacpe\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\kacpe\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
+    "C:\\Users\\kacpe\\.nuget\\packages\\fluentvalidation\\10.1.0\\fluentvalidation.10.1.0.nupkg.sha512",
+    "C:\\Users\\kacpe\\.nuget\\packages\\fluentvalidation.aspnetcore\\10.1.0\\fluentvalidation.aspnetcore.10.1.0.nupkg.sha512",
+    "C:\\Users\\kacpe\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\10.1.0\\fluentvalidation.dependencyinjectionextensions.10.1.0.nupkg.sha512",
     "C:\\Users\\kacpe\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\kacpe\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\kacpe\\.nuget\\packages\\microsoft.data.sqlclient\\2.0.1\\microsoft.data.sqlclient.2.0.1.nupkg.sha512",

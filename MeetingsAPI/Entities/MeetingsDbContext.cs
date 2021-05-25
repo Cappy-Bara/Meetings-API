@@ -22,11 +22,17 @@ namespace MeetingsAPI.Entities
             .HasMaxLength(50);
 
             modelBuilder.Entity<User>()
-            .Property(r => r.Name)
+            .Property(r => r.Email)
             .IsRequired()
             .HasMaxLength(50);
 
-
+            modelBuilder.Entity<Meeting>()
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(200);
+            modelBuilder.Entity<Meeting>()
+            .Property(r => r.Time)
+            .IsRequired();
 
         }
 

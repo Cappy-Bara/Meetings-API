@@ -12,7 +12,6 @@ namespace MeetingsAPI.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        [JsonIgnore]
         public virtual List<Meeting> Meetings { get; set; }
     }
 }

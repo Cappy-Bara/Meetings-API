@@ -27,10 +27,9 @@ namespace MeetingsAPI.Controllers.Services
             _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
         }
-        private User FindUserInDb(string userName, string email)
+        private User FindUserInDb(string email)
         {
             return _dbContext.Users.FirstOrDefault(n =>
-                n.Name == userName &&
                 n.Email == email
                 );
         }
@@ -49,25 +48,28 @@ namespace MeetingsAPI.Controllers.Services
         {
             return meeting.EnrolledUsers.Count() >= 25;
         }
-
-
-        //DATETIME I WALIDACJA MODELI
+        private bool MeetingExists(CreateMeetingDto dto)
+        {
+            var meeting = FindMeetingInDb(dto);
+            return meeting != null;
+        }
 
 
         public Meeting CreateMeetingAndAddToDb(CreateMeetingDto dto)
         {
-            var meeting = FindMeetingInDb(dto);
-            if (meeting != null)
-                throw new Exception("This meeting already exists.");
-            meeting = _mapper.Map<Meeting>(dto);
+            if(MeetingExists(dto))
+                throw new EntityExistsException("This meeting already exists.");
+            var meeting = _mapper.Map<Meeting>(dto);
             _dbContext.Add(meeting);
             _dbContext.SaveChanges();
             return meeting;
         }
         public List<ReturnMeetingDto> GetAllMeetings()
         {
-            var retVar = _mapper.Map<List<ReturnMeetingDto>>(_dbContext.Meetings.Include(n => n.EnrolledUsers).ToList());
-            return retVar;
+            return _mapper.Map<List<ReturnMeetingDto>>
+                (_dbContext.Meetings
+                .Include(n => n.EnrolledUsers)
+                .ToList());
         }
         public void RemoveMeetingFromDb(int meetingId)
         {
@@ -82,7 +84,7 @@ namespace MeetingsAPI.Controllers.Services
             var meeting = FindMeetingInDb(meetingId);
             if (meeting == null)
                 throw new NotFoundException("Meeting not found!");
-            var user = FindUserInDb(dto.Name,dto.Email);
+            var user = FindUserInDb(dto.Email);
             if (user == null)
             {
                 user = _mapper.Map<User>(dto);
@@ -91,21 +93,15 @@ namespace MeetingsAPI.Controllers.Services
             else
             {
                 if(meeting.EnrolledUsers.FirstOrDefault(n => n.Email == user.Email) != null)
-                    throw new Exception("User with this email has already enrolled to the course!");   //jak to jest po angielski??
+                    throw new EntityExistsException("User with this email has already enrolled to the meeting!"); 
             }
 
             if (MoreThan25PeopleEnrolled(meeting))
-                throw new Exception("Too much users enrolled in the meeting");
+                throw new EntityExistsException("Too much users enrolled in the meeting");
             
             meeting.EnrolledUsers.Add(user);
             _dbContext.Meetings.Update(meeting);
             _dbContext.SaveChanges();
         }
-
-
-
-
-
-
     }
 }
