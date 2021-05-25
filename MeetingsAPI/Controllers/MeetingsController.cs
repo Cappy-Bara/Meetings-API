@@ -22,10 +22,10 @@ namespace MeetingsAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMeeting([FromBody]MeetingDto dto)
+        public ActionResult CreateMeeting([FromBody]CreateMeetingDto dto)
         {
-            _meetingService.CreateMeetingAndAddToDb(dto);
-            return Ok();        //Zmienić na created
+            var meeting =_meetingService.CreateMeetingAndAddToDb(dto);
+            return Created($"/meeting/{meeting.Id}",meeting);
         }
 
         [HttpGet]
@@ -34,17 +34,17 @@ namespace MeetingsAPI.Controllers
             return Ok(_meetingService.GetAllMeetings());
         }
 
-        [HttpDelete]
-        public ActionResult RemoveMeeting([FromBody]int meetingId)      //NIE FROM BODY!
+        [HttpDelete("{meetingId}")]
+        public ActionResult RemoveMeeting([FromRoute]int meetingId)
         {
             _meetingService.RemoveMeetingFromDb(meetingId);
             return NoContent();
         }
 
-        [HttpPost("user")]
-        public ActionResult AddUserToMeeting([FromBody]AddUserToMeetingDto dto)
+        [HttpPost("{meetingId}")]
+        public ActionResult AddUserToMeeting([FromRoute]int meetingId,[FromBody]UserDto dto)
         {
-            _meetingService.AddUserToMeetingAndToDb(dto);
+            _meetingService.AddUserToMeetingAndToDb(meetingId, dto);
             return Ok();
         }
 

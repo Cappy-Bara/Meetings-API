@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MeetingsAPI.Controllers.Services.Interfaces;
 using MeetingsAPI.Entities;
 using MeetingsAPI.Exceptions;
@@ -14,28 +15,12 @@ namespace MeetingsAPI.Controllers.Services
     public class MeetingService : IMeetingService
     {
         private readonly MeetingsDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public MeetingService(MeetingsDbContext dbContext)
+        public MeetingService(MeetingsDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
-        }
-
-
-        private Meeting CreateMeetingObject(MeetingDto dto) 
-        {
-            return new Meeting()
-            {
-                Name = dto.Name,
-                Time = dto.Time
-            };
-        }
-        private User CreateUserObject(string userName, string email) 
-        {
-            return new User()
-            {
-                Name = userName,
-                Email = email,
-            };
+            _mapper = mapper;
         }
         private void AddUserToDb(User user)
         {
@@ -55,21 +40,34 @@ namespace MeetingsAPI.Controllers.Services
                 .Include(n => n.EnrolledUsers)
                 .FirstOrDefault(n => n.Id == meetingId);
         }
+        private Meeting FindMeetingInDb(CreateMeetingDto dto)
+        {
+            return _dbContext.Meetings
+                .FirstOrDefault(n => n.Name == dto.Name && n.Time == dto.Time);
+        }
         private bool MoreThan25PeopleEnrolled(Meeting meeting)
         {
             return meeting.EnrolledUsers.Count() >= 25;
         }
 
 
-        public void CreateMeetingAndAddToDb(MeetingDto dto)
+        //DATETIME I WALIDACJA MODELI
+
+
+        public Meeting CreateMeetingAndAddToDb(CreateMeetingDto dto)
         {
-            var meeting = CreateMeetingObject(dto);
+            var meeting = FindMeetingInDb(dto);
+            if (meeting != null)
+                throw new Exception("This meeting already exists.");
+            meeting = _mapper.Map<Meeting>(dto);
             _dbContext.Add(meeting);
             _dbContext.SaveChanges();
+            return meeting;
         }
-        public List<Meeting> GetAllMeetings()
+        public List<ReturnMeetingDto> GetAllMeetings()
         {
-            return _dbContext.Meetings.Include(n => n.EnrolledUsers).ToList();
+            var retVar = _mapper.Map<List<ReturnMeetingDto>>(_dbContext.Meetings.Include(n => n.EnrolledUsers).ToList());
+            return retVar;
         }
         public void RemoveMeetingFromDb(int meetingId)
         {
@@ -79,23 +77,21 @@ namespace MeetingsAPI.Controllers.Services
             _dbContext.Meetings.Remove(meeting);
             _dbContext.SaveChanges();
         }
-
-        //SPRAWDZANIE CZY JEST 25 OSÓB, I CZY UŻYTKOWNIK JEST JUŻ ZAPISANY!
-        public void AddUserToMeetingAndToDb(AddUserToMeetingDto dto)
+        public void AddUserToMeetingAndToDb(int meetingId, UserDto dto)
         {
-            var meeting = FindMeetingInDb(dto.MeetingId);
+            var meeting = FindMeetingInDb(meetingId);
             if (meeting == null)
                 throw new NotFoundException("Meeting not found!");
-            var user = FindUserInDb(dto.UserName,dto.UserEmail);
+            var user = FindUserInDb(dto.Name,dto.Email);
             if (user == null)
             {
-                user = CreateUserObject(dto.UserName, dto.UserEmail);
+                user = _mapper.Map<User>(dto);
                 AddUserToDb(user);
             }
             else
             {
-                if(meeting.EnrolledUsers.FirstOrDefault(n => n.Email == user.Email) != null);                 //nie wiem czy to działa
-                    throw new Exception("User with this email already enrolls the course");                  //jak to jest po angielski??
+                if(meeting.EnrolledUsers.FirstOrDefault(n => n.Email == user.Email) != null)
+                    throw new Exception("User with this email has already enrolled to the course!");   //jak to jest po angielski??
             }
 
             if (MoreThan25PeopleEnrolled(meeting))

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MeetingsAPI.Models
 {
-    public class MeetingDto
+    public class CreateMeetingDto
     {
         public string Name { get; set; }
         public DateTime Time { get; set; }

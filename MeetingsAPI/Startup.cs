@@ -31,6 +31,7 @@ namespace MeetingsAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<MeetingsDbContext>();
+            services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<IMeetingService, MeetingService>();
             services.AddScoped<ExceptionHandlingMiddleware>();
             services.AddControllers();

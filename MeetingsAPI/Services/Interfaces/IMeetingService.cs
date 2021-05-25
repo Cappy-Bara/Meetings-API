@@ -10,10 +10,10 @@ namespace MeetingsAPI.Controllers.Services.Interfaces
 {
     public interface IMeetingService
     {
-        public void CreateMeetingAndAddToDb(MeetingDto dto);
+        public Meeting CreateMeetingAndAddToDb(CreateMeetingDto dto);
         public void RemoveMeetingFromDb(int meetingId);
-        public List<Meeting> GetAllMeetings();
-        public void AddUserToMeetingAndToDb(AddUserToMeetingDto dto);
+        public List<ReturnMeetingDto> GetAllMeetings();
+        public void AddUserToMeetingAndToDb(int meetingId,UserDto dto);
 
     }
 }

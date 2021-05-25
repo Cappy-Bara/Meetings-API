@@ -16,7 +16,15 @@ namespace MeetingsAPI.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(50);
 
+            modelBuilder.Entity<User>()
+            .Property(r => r.Name)
+            .IsRequired()
+            .HasMaxLength(50);
 
 
 
